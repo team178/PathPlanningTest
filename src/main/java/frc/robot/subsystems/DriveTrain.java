@@ -25,16 +25,13 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import frc.robot.OI;
 import frc.robot.Constants.*;
 
-/**
- * Add your docs here.
- */
 public class DriveTrain extends SubsystemBase {
   
   //DM declarations
-  public static VictorSPX left1;
-  public static VictorSPX left2;
-  public static VictorSPX right1;
-  public static VictorSPX right2;
+  public static VictorSPX leftMaster;
+  public static VictorSPX leftSlave;
+  public static VictorSPX rightMaster;
+  public static VictorSPX rightSlave;
   
   //Gyro
   private final SPI.Port sPort = SPI.Port.kOnboardCS0;
@@ -55,24 +52,35 @@ public class DriveTrain extends SubsystemBase {
   private double twistReduction = 0;
 
   public DriveTrain() {
-    left1 = new VictorSPX(RobotMappings.DMTopLeft);
-    left2 = new VictorSPX(RobotMappings.DMBottomLeft);
-    right1 = new VictorSPX(RobotMappings.DMTopRight);
-    right2 = new VictorSPX(RobotMappings.DMBottomRight);
+    //Init DMs
+	  leftMaster = new VictorSPX(RobotMap.DMTopLeft);
+	  leftSlave = new VictorSPX(RobotMap.DMBottomLeft);
+	  rightMaster = new VictorSPX(RobotMap.DMTopRight);
+	  rightSlave = new VictorSPX(RobotMap.DMBottomRight);
+	  
+	  //Set victors to slaves
+	  leftSlave.follow(leftMaster);
+	  rightSlave.follow(rightMaster);
+	  
+	  //Config left motor & sensor directions
+	  leftMaster.setInverted(true);
+	  leftMaster.setSensorPhase(true);
+	  leftSlave.setInverted(InvertType.FollowMaster);
+	  
+	  //Config right motor & sensor directions
+	  rightMaster.setInverted(false);
+	  rightMaster.setSensorPhase(false);
+	  rightSlave.setInverted(InvertType.FollowMaster);
   }
 
   public void drive(double leftPower, double rightPower) {
-    left1.set(ControlMode.PercentOutput, -leftPower);
-    left2.set(ControlMode.PercentOutput, -leftPower);
-    right1.set(ControlMode.PercentOutput, rightPower);
-    right2.set(ControlMode.PercentOutput, rightPower);
+    leftMaster.set(ControlMode.PercentOutput, leftPower);
+    rightMaster.set(ControlMode.PercentOutput, rightPower);
   }
 
   public void driveVolts(double leftPower, double rightPower) {
-    left1.set(ControlMode.PercentOutput, -leftPower / 12);
-    left2.set(ControlMode.PercentOutput, -leftPower / 12);
-    right1.set(ControlMode.PercentOutput, rightPower / 12);
-    right2.set(ControlMode.PercentOutput, rightPower / 12);
+    leftMaster.set(ControlMode.PercentOutput, -leftPower / 12);
+    rightMaster.set(ControlMode.PercentOutput, rightPower / 12);
   }
 
   public void resetEncoders() {
