@@ -34,6 +34,8 @@ public class ThrustmasterJoystick {
     public Button rightPadBottom2;
     public Button rightPadBottom3;
 
+    private int port;
+
     public ThrustmasterJoystick(int port) {
         joystick = new Joystick(port);
         trigger = new JoystickButton(joystick, 1);
@@ -51,6 +53,8 @@ public class ThrustmasterJoystick {
         rightPadTop1 = new JoystickButton(joystick, 13);
         rightPadBottom1 = new JoystickButton(joystick, 14);
         rightPadBottom3 = new JoystickButton(joystick, 16);
+
+        this.port = port;
     
         //Setting JOYSTICK channels
         joystick.setXChannel(3);
@@ -61,15 +65,15 @@ public class ThrustmasterJoystick {
 
     //JOYSTICK accessor methods
     public double getX() {
-	return joystick.getRawAxis(0);
+	    return joystick.getRawAxis(0);
     }
 	
     public double getY() {
-	return -joystick.getRawAxis(1);
+	    return -joystick.getRawAxis(1);
     }
 
     public double getTwist() {
-	return joystick.getRawAxis(2);
+	    return joystick.getRawAxis(2);
     }
     
     /**
@@ -79,13 +83,17 @@ public class ThrustmasterJoystick {
      * @return the slider value defined by <i>includeNegative</i> 
      */
     public double getSlider(boolean includeNegative) {
-	return includeNegative ? joystick.getRawAxis(3) : (joystick.getRawAxis(3) + 1) / 2;
+	    return includeNegative ? -joystick.getRawAxis(3) : (1 - joystick.getRawAxis(3)) / 2;
     }
     
     public void printJoystickChannels() {
-	System.out.println("X channel: " + joystick.getXChannel());
-	System.out.println("Y channel: " + joystick.getYChannel());
-	System.out.println("Z channel: " + joystick.getZChannel());
-	System.out.println("Twist channel: " + joystick.getTwistChannel());
+        System.out.println("X channel: " + joystick.getXChannel());
+        System.out.println("Y channel: " + joystick.getYChannel());
+        System.out.println("Z channel: " + joystick.getZChannel());
+        System.out.println("Twist channel: " + joystick.getTwistChannel());
+    }
+
+    public int getPort() {
+        return port;
     }
 }

@@ -26,6 +26,8 @@ public class XboxController {
     public static Button auxBack;
     public static Button auxStart;
 
+    private int port;
+
     public XboxController(int port) {
         xbox = new Joystick(port);
         auxA = new JoystickButton(xbox, 1);
@@ -36,29 +38,35 @@ public class XboxController {
         auxRightBumper = new JoystickButton(xbox, 6);
         auxBack = new JoystickButton(xbox, 7);
         auxStart = new JoystickButton(xbox, 8);
+
+        this.port = port;
     }
 
     public double getLeftStickX() {
-	return xbox.getRawAxis(0);
+	    return xbox.getRawAxis(0);
     }
 	
     public double getLeftStickY() {
-	return xbox.getRawAxis(1);
+	    return xbox.getRawAxis(1);
     }
 	
     public double getRightStickX() {
-	return xbox.getRawAxis(4);
+	    return xbox.getRawAxis(4);
     }
 	
     public double getRightStickY() {
-	return xbox.getRawAxis(5);
+	    return xbox.getRawAxis(5);
     }
 	
     public double getLeftTrigger() {
-	return xbox.getRawAxis(2);
+	    return xbox.getRawAxis(2);
     }
 	
     public double getRightTrigger() {
-	return xbox.getRawAxis(3);
+	    return xbox.getRawAxis(3);
+    }
+
+    public int getPort() {
+        return port;
     }
 }

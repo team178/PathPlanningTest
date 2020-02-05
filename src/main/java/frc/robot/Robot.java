@@ -7,11 +7,14 @@
 
 package frc.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode.PixelFormat;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.autonomous.PathFollower;
-import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.RobotMappings;
+import frc.robot.subsystems.DriveTrain;
+import libs.IO.ThrustmasterJoystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,25 +25,42 @@ import frc.robot.subsystems.*;
  */
 public class Robot extends TimedRobot {
   
-  public static DriveTrain driveTrain = new DriveTrain();
-  public static OI oi = new OI();
-  private Command autonomousCommand = null;
+  //Declare subsystems
+  public static DriveTrain driveTrain;
+
+  //Declare controllers
+  public static ThrustmasterJoystick mainController = new ThrustmasterJoystick(RobotMappings.mainController);
+  public static XboxController auxController = new XboxController(RobotMappings.auxController);
+
+  //USB Camera declarations
+  public static UsbCamera frontCamera;
+  public static UsbCamera backCamera;
 
   @Override
   public void robotInit() {
-  }
+    //Subsystems
+    driveTrain = new DriveTrain();
 
+    //Camera 1
+    frontCamera = CameraServer.getInstance().startAutomaticCapture("Front cam", 0);
+    frontCamera.setResolution(160, 90);
+    frontCamera.setFPS(30);
+    frontCamera.setPixelFormat(PixelFormat.kYUYV);
+
+    //Camera 2
+    backCamera = CameraServer.getInstance().startAutomaticCapture("Back cam", 1);
+    backCamera.setResolution(160, 120);
+    backCamera.setFPS(30);
+    backCamera.setPixelFormat(PixelFormat.kYUYV);
+  }
+  
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+    
   }
 
   @Override
   public void autonomousInit() {
-    autonomousCommand = PathFollower.getAutonomousCommand();
-    if (autonomousCommand != null) {
-      autonomousCommand.schedule();
-    }
   }
 
   @Override
@@ -49,13 +69,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    if (autonomousCommand != null) {
-      autonomousCommand.cancel();
-    }
   }
 
   @Override
   public void teleopPeriodic() {
+    driveTrain.periodic();
   }
 
   @Override
