@@ -12,6 +12,8 @@ import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.RobotMappings;
 import frc.robot.subsystems.DriveTrain;
 import libs.IO.ThrustmasterJoystick;
@@ -36,24 +38,47 @@ public class Robot extends TimedRobot {
   public static UsbCamera frontCamera;
   public static UsbCamera backCamera;
 
+  //Declare auto sendable choosers
+  public static SendableChooser<String> testChooser = new SendableChooser<String>();
+  
   @Override
   public void robotInit() {
+    
     //Subsystems
     driveTrain = new DriveTrain();
-
+    
     //Camera 1
     frontCamera = CameraServer.getInstance().startAutomaticCapture("Front cam", 0);
     frontCamera.setResolution(160, 90);
     frontCamera.setFPS(30);
     frontCamera.setPixelFormat(PixelFormat.kYUYV);
-
+    
     //Camera 2
     backCamera = CameraServer.getInstance().startAutomaticCapture("Back cam", 1);
     backCamera.setResolution(160, 120);
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
+    
+    testChooser.addOption("Action", "Shoot Ball");
+    testChooser.addOption("Action","");
+    //Add more actions when needed and name them
   }
   
+//Create widgets
+  public void pathActions(){
+    int numberPaths = 0;
+    int pathToPathNumber = 1;
+    SmartDashboard.putNumber("How many paths?", numberPaths);
+    if(numberPaths > 0)
+    {
+      //For loop to create as many drop downs as there are paths Insert command to create widgets 
+      for(int i=0; i < numberPaths; i++){
+        
+      }
+
+    }
+  } 
+
   @Override
   public void robotPeriodic() {
     
