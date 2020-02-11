@@ -35,7 +35,9 @@ public class DriveTrain extends SubsystemBase {
 
   //Encoders 
   private final int TIMEOUT = 30;//"block" to stop the config from continuously updating until success (not really sure why we need this -Darren)
-  
+  private static int distanceTravelled; 
+
+  //Gyro
   private final Gyro gyro = new ADXRS450_Gyro(RobotMappings.gyroPort);
 
   //Pathplanning
@@ -109,8 +111,33 @@ public class DriveTrain extends SubsystemBase {
     //disconuity with books ends goes here, if we need it 
     pulseWidth = pulseWidth & 0xFFF;//makes sure value is within 0 and 360 degrees
     talonSRX.getSensorCollection().setQuadraturePosition(pulseWidth, TIMEOUT);//assigns starting quadrature position to pulse width 
+    //getSensorCollection() returns an object that can get raw data 
   }
 
+  public double getDistance(TalonSRX talonSRX)
+  {
+    int temp = distanceTravelled;
+    distanceTravelled = 0; 
+    return temp; 
+  }
+
+  public double getPosition(TalonSRX talonSRX)
+  {
+    return talonSRX.getSensorCollection().getPulseWidthPosition() * 360.0 / 4096.0;
+    //getPulseWidthPosition() returns a value from -4096 to 4096, this converts it to degrees 
+  }
+
+  public double getRelativeVelocity(TalonSRX talonSRX)
+  {
+    return talonSRX.getSensorCollection().getPulseWidthVelocity();
+  }
+
+  public double getAbsoluteVelocity(TalonSRX talonSRX)
+  {
+    return talonSRX.getSensorCollection().getQuadratureVelocity();
+  }
+
+  /*
   public double getLeftDistance() {
     return 0;
   }
@@ -126,6 +153,7 @@ public class DriveTrain extends SubsystemBase {
   public double getRightRate() {
     return 0;
   }
+  */
 
   public void resetEncoders() {
 
