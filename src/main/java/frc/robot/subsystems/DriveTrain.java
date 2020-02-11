@@ -48,10 +48,10 @@ public class DriveTrain extends SubsystemBase {
   private static PIDController leftPIDController;
   private static PIDController rightPIDController;
 
-  private double yVal;
-  private double twistVal;
-  private double yReduction;
-  private double twistReduction;
+  private static double yVal;
+  private static double twistVal;
+  private static double yReduction;
+  private static double twistReduction;
   
   public DriveTrain() {
     leftMaster = new TalonSRX(RobotMappings.DMLeftMaster);
@@ -62,8 +62,7 @@ public class DriveTrain extends SubsystemBase {
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
 
-    rightMaster.setInverted(true);
-    rightSlave.setInverted(InvertType.FollowMaster);
+    setDriveDirection(DriveDirection.FORWARD);
 
     kinematics = new DifferentialDriveKinematics(PathConstants.kTrackWidthMeters);
     odometry = new DifferentialDriveOdometry(getAngle());
@@ -88,6 +87,18 @@ public class DriveTrain extends SubsystemBase {
   public void driveVolts(double leftVolts, double rightVolts) {
     leftMaster.set(ControlMode.PercentOutput, leftVolts / PathConstants.kMaxVoltage);
     rightMaster.set(ControlMode.PercentOutput, rightVolts / PathConstants.kMaxVoltage );
+  }
+
+  public void setDriveDirection(DriveDirection driveDirection) {
+    if (driveDirection == DriveDirection.FORWARD) {
+      leftMaster.setInverted(false);
+      rightMaster.setInverted(true);
+    } else {
+      leftMaster.setInverted(true);
+      rightMaster.setInverted(false);
+    }
+    leftSlave.setInverted(InvertType.FollowMaster);
+    rightSlave.setInverted(InvertType.FollowMaster);
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -226,5 +237,10 @@ public class DriveTrain extends SubsystemBase {
 
   public PIDController getRightPIDController() {
     return rightPIDController;
+  }
+
+  enum DriveDirection {
+    FORWARD,
+    BACKWARD
   }
 }

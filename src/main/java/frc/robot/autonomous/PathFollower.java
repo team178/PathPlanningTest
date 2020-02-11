@@ -13,7 +13,6 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -50,9 +49,10 @@ public class PathFollower {
             PathConstants.kMaxAccelMPSPS
         )
         .setKinematics(driveTrain.getKinematics())
+        .setReversed(false)
         .addConstraint(voltageConstraint);
 
-        //A test trajectory
+        //Nithin's test trajectory
         Trajectory nithinsTestTrajectory = TrajectoryGenerator.generateTrajectory(
             //Start pose
             new Pose2d(0, 0, new Rotation2d(0)),
