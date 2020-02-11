@@ -32,6 +32,9 @@ public class DriveTrain extends SubsystemBase {
   private static VictorSPX leftSlave;
   private static TalonSRX rightMaster;
   private static VictorSPX rightSlave;
+
+  //Encoders 
+  private final int TIMEOUT = 30;//"block" to stop the config from continuously updating until success (not really sure why we need this -Darren)
   
   private final Gyro gyro = new ADXRS450_Gyro(RobotMappings.gyroPort);
 
@@ -66,6 +69,13 @@ public class DriveTrain extends SubsystemBase {
 
     leftPIDController = new PIDController(PathConstants.kDriveP, 0, 0);
     leftPIDController = new PIDController(PathConstants.kDriveP, 0, 0);
+
+    //Encoders 
+    //sets the "base" of the relative quadulature measurement to the abolute measurement from the pulse width magnet measurement 
+    initQuadulature(leftMaster);
+    initQuadulature(rightMaster);
+    //initQuadulature(leftSlave);
+    //initQuadulature(rightSlave);
   }
 
   public void drive(double leftPower, double rightPower) {
@@ -86,8 +96,21 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /*
-   * encoder methods
+   * Encoder methods
+   * Encoder gets "Quadulature" and "Pulse Width (Magnet)" value 
+   * - Quadulature is fast updating but relative 
+   * - Pulse Width is absoulute, but slow 
+   * - Basically, just assign the starting vaue of Quadulature to Pulse Width 
    */
+
+  public void initQuadulature(TalonSRX talonSRX)//assigns absolute value from magnet to starting val of quadulature 
+  {
+    int pulseWidth = talonSRX.getSensorCollection().getPulseWidthPosition();//gets pulse width (absolute) value 
+    //disconuity with books ends goes here, if we need it 
+    pulseWidth = pulseWidth & 0xFFF;//makes sure value is within 0 and 360 degrees
+    talonSRX.getSensorCollection().setQuadraturePosition(pulseWidth, TIMEOUT);//assigns starting quadrature position to pulse width 
+  }
+
   public double getLeftDistance() {
     return 0;
   }
