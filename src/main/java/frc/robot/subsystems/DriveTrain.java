@@ -94,8 +94,6 @@ public class DriveTrain extends SubsystemBase {
   public void driveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
     rightMotors.setVoltage(rightVolts);
-    // leftMaster.set(ControlMode.PercentOutput, leftVolts / PathConstants.kMaxVoltage);
-    // rightMaster.set(ControlMode.PercentOutput, rightVolts / PathConstants.kMaxVoltage );
   }
 
   public void setDriveDirection(DriveDirection driveDirection) {
