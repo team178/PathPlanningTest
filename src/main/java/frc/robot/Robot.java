@@ -39,7 +39,8 @@ public class Robot extends TimedRobot {
   public static UsbCamera backCamera;
 
   //Declare auto sendable choosers
-  public static SendableChooser<String> testChooser = new SendableChooser<String>();
+  public static SendableChooser<String> startPath = new SendableChooser<>();
+  public static SendableChooser<String> endLocation = new SendableChooser<>();
   
   @Override
   public void robotInit() {
@@ -59,25 +60,20 @@ public class Robot extends TimedRobot {
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
     
-    testChooser.addOption("Action", "Shoot Ball");
-    testChooser.addOption("Action","");
-    //Add more actions when needed and name them
+    startPath.addOption("Left","Left");
+    startPath.addOption("Middle","Middle");
+    startPath.addOption("Right","Right");
+
+    endLocation.addOption("Left","Left");
+    endLocation.addOption("Middle","Middle");
+    endLocation.addOption("Right","Right");
+
+
+    SmartDashboard.putData("AutoLocation", startPath);
+    SmartDashboard.putData("AutoLocation", endLocation);
   }
   
-//Create widgets
-  public void pathActions(){
-    int numberPaths = 0;
-    int pathToPathNumber = 1;
-    SmartDashboard.putNumber("How many paths?", numberPaths);
-    if(numberPaths > 0)
-    {
-      //For loop to create as many drop downs as there are paths Insert command to create widgets 
-      for(int i=0; i < numberPaths; i++){
-        
-      }
 
-    }
-  } 
 
   @Override
   public void robotPeriodic() {
