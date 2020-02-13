@@ -11,10 +11,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -28,10 +32,13 @@ import frc.robot.Constants.*;
 public class DriveTrain extends SubsystemBase {
 
   //Motor controllers
-  private static TalonSRX leftMaster;
-  private static VictorSPX leftSlave;
-  private static TalonSRX rightMaster;
-  private static VictorSPX rightSlave;
+  private static WPI_TalonSRX leftMaster;
+  private static WPI_VictorSPX leftSlave;
+  private static WPI_TalonSRX rightMaster;
+  private static WPI_VictorSPX rightSlave;
+
+  private static SpeedControllerGroup leftMotors = new SpeedControllerGroup(leftMaster, leftSlave);
+  private static SpeedControllerGroup rightMotors = new SpeedControllerGroup(leftMaster, leftSlave);
 
   //Encoders 
   private final int TIMEOUT = 30;//"block" to stop the config from continuously updating until success (not really sure why we need this -Darren)
@@ -54,10 +61,10 @@ public class DriveTrain extends SubsystemBase {
   private static double twistReduction;
   
   public DriveTrain() {
-    leftMaster = new TalonSRX(RobotMappings.DMLeftMaster);
-    leftSlave = new VictorSPX(RobotMappings.DMLeftSlave);
-    rightMaster = new TalonSRX(RobotMappings.DMRightMaster);
-    rightSlave = new VictorSPX(RobotMappings.DMRightSlave);
+    leftMaster = new WPI_TalonSRX(RobotMappings.DMLeftMaster);
+    leftSlave = new WPI_VictorSPX(RobotMappings.DMLeftSlave);
+    rightMaster = new WPI_TalonSRX(RobotMappings.DMRightMaster);
+    rightSlave = new WPI_VictorSPX(RobotMappings.DMRightSlave);
     
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
@@ -73,8 +80,8 @@ public class DriveTrain extends SubsystemBase {
 
     //Encoders 
     //sets the "base" of the relative quadulature measurement to the abolute measurement from the pulse width magnet measurement 
-    initQuadulature(leftMaster);
-    initQuadulature(rightMaster);
+    //initQuadulature(leftMaster);
+    //initQuadulature(rightMaster);
     //initQuadulature(leftSlave);
     //initQuadulature(rightSlave);
   }
@@ -85,8 +92,10 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void driveVolts(double leftVolts, double rightVolts) {
-    leftMaster.set(ControlMode.PercentOutput, leftVolts / PathConstants.kMaxVoltage);
-    rightMaster.set(ControlMode.PercentOutput, rightVolts / PathConstants.kMaxVoltage );
+    leftMotors.setVoltage(leftVolts);
+    rightMotors.setVoltage(rightVolts);
+    // leftMaster.set(ControlMode.PercentOutput, leftVolts / PathConstants.kMaxVoltage);
+    // rightMaster.set(ControlMode.PercentOutput, rightVolts / PathConstants.kMaxVoltage );
   }
 
   public void setDriveDirection(DriveDirection driveDirection) {
@@ -116,7 +125,7 @@ public class DriveTrain extends SubsystemBase {
    * - Basically, just assign the starting vaue of Quadulature to Pulse Width 
    */
 
-  public void initQuadulature(TalonSRX talonSRX)//assigns absolute value from magnet to starting val of quadulature 
+  public void initQuadulature(WPI_TalonSRX talonSRX)//assigns absolute value from magnet to starting val of quadulature 
   {
     int pulseWidth = talonSRX.getSensorCollection().getPulseWidthPosition();//gets pulse width (absolute) value 
     //disconuity with books ends goes here, if we need it 
@@ -125,30 +134,26 @@ public class DriveTrain extends SubsystemBase {
     //getSensorCollection() returns an object that can get raw data 
   }
 
-  public double getDistance(TalonSRX talonSRX)
+  public double getDistance(WPI_TalonSRX talonSRX)
   {
     int temp = distanceTravelled;
     distanceTravelled = 0; 
     return temp; 
   }
 
-  public double getPosition(TalonSRX talonSRX)
-  {
-    return talonSRX.getSensorCollection().getPulseWidthPosition() * 360.0 / 4096.0;
+  public double getPosition(WPI_TalonSRX talon) {
     //getPulseWidthPosition() returns a value from -4096 to 4096, this converts it to degrees 
+    return talon.getSensorCollection().getPulseWidthPosition() * 360.0 / 4096.0;
   }
 
-  public double getRelativeVelocity(TalonSRX talonSRX)
-  {
-    return talonSRX.getSensorCollection().getPulseWidthVelocity();
+  public double getRelativeVelocity(WPI_TalonSRX talon) {
+    return talon.getSensorCollection().getPulseWidthVelocity();
   }
 
-  public double getAbsoluteVelocity(TalonSRX talonSRX)
-  {
-    return talonSRX.getSensorCollection().getQuadratureVelocity();
+  public double getAbsoluteVelocity(WPI_TalonSRX talon) {
+    return talon.getSensorCollection().getQuadratureVelocity();
   }
 
-  /*
   public double getLeftDistance() {
     return 0;
   }
@@ -164,7 +169,6 @@ public class DriveTrain extends SubsystemBase {
   public double getRightRate() {
     return 0;
   }
-  */
 
   public void resetEncoders() {
 
@@ -200,10 +204,6 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     //Joystick drive
-    if (Robot.mainController.headBottom.get()) {
-      resetGyro();
-    }
-
     yReduction = Robot.mainController.trigger.get() ? 0.5 : 1;
     twistReduction = Robot.mainController.trigger.get() ? 0.4 : 1;
 
