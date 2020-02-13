@@ -212,6 +212,10 @@ public class DriveTrain extends SubsystemBase {
 
     //Path planning
     odometry.update(getAngle(), getLeftDistance(), getRightDistance());
+
+    //test
+    System.out.println("left dist: " + getDistance(leftMaster));
+    System.out.println("right dist: " + getDistance(rightMaster));
   }
 
   /*
