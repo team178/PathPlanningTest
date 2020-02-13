@@ -12,6 +12,7 @@ import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.RobotMappings;
@@ -59,7 +60,17 @@ public class Robot extends TimedRobot {
     backCamera.setResolution(160, 120);
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
+  }
+  
+
+
+  @Override
+  public void robotPeriodic() {
     
+  }
+
+  @Override
+  public void autonomousInit() {
     startPath.addOption("Left","Left");
     startPath.addOption("Middle","Middle");
     startPath.addOption("Right","Right");
@@ -72,20 +83,37 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("AutoLocation", startPath);
     SmartDashboard.putData("AutoLocation", endLocation);
   }
-  
-
-
-  @Override
-  public void robotPeriodic() {
-    
-  }
-
-  @Override
-  public void autonomousInit() {
-  }
 
   @Override
   public void autonomousPeriodic() {
+    if() {
+			Scheduler.getInstance().run();
+		}
+		else {
+      //Might scrw up if keep changing startPath and endLocation
+      if (startPath.getSelected() != "" && endLocation.getSelected() != "" ){
+        String path1 = startPath.getSelected();
+        String path2 = endLocation.getSelected();
+        if (path1 == "Left"){
+          //put trajectory 1
+        }
+        else if (path1 == "Middle"){
+          //put trajectory 2
+        }
+        else if (path1 == "Right"){
+          //put trajectory 3
+        }
+        if (path2 == "Left"){
+          //put trajectory 4
+        }
+        else if (path2 == "Middle"){
+          //put trajectory 5
+        }
+        else if (path2 == "Right"){
+          //put trajectory 6
+        }
+      } 
+    }
   }
 
   @Override
