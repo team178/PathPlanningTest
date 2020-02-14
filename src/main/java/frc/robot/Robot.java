@@ -12,6 +12,7 @@ import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.RobotMappings;
@@ -39,7 +40,8 @@ public class Robot extends TimedRobot {
   public static UsbCamera backCamera;
 
   //Declare auto sendable choosers
-  public static SendableChooser<String> testChooser = new SendableChooser<String>();
+  public static SendableChooser<String> startPath = new SendableChooser<>();
+  public static SendableChooser<String> endLocation = new SendableChooser<>();
   
   @Override
   public void robotInit() {
@@ -58,26 +60,9 @@ public class Robot extends TimedRobot {
     backCamera.setResolution(160, 120);
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
-    
-    testChooser.addOption("Action", "Shoot Ball");
-    testChooser.addOption("Action","");
-    //Add more actions when needed and name them
   }
   
-//Create widgets
-  public void pathActions(){
-    int numberPaths = 0;
-    int pathToPathNumber = 1;
-    SmartDashboard.putNumber("How many paths?", numberPaths);
-    if(numberPaths > 0)
-    {
-      //For loop to create as many drop downs as there are paths Insert command to create widgets 
-      for(int i=0; i < numberPaths; i++){
-        
-      }
 
-    }
-  } 
 
   @Override
   public void robotPeriodic() {
@@ -86,10 +71,49 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    startPath.addOption("Left","Left");
+    startPath.addOption("Middle","Middle");
+    startPath.addOption("Right","Right");
+
+    endLocation.addOption("Left","Left");
+    endLocation.addOption("Middle","Middle");
+    endLocation.addOption("Right","Right");
+
+
+    SmartDashboard.putData("AutoLocation", startPath);
+    SmartDashboard.putData("AutoLocation", endLocation);
   }
 
   @Override
   public void autonomousPeriodic() {
+    if() {
+			Scheduler.getInstance().run();
+		}
+		else {
+      //Might scrw up if keep changing startPath and endLocation
+      if (startPath.getSelected() != "" && endLocation.getSelected() != "" ){
+        String path1 = startPath.getSelected();
+        String path2 = endLocation.getSelected();
+        if (path1 == "Left"){
+          //put trajectory 1
+        }
+        else if (path1 == "Middle"){
+          //put trajectory 2
+        }
+        else if (path1 == "Right"){
+          //put trajectory 3
+        }
+        if (path2 == "Left"){
+          //put trajectory 4
+        }
+        else if (path2 == "Middle"){
+          //put trajectory 5
+        }
+        else if (path2 == "Right"){
+          //put trajectory 6
+        }
+      } 
+    }
   }
 
   @Override
