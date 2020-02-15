@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if() {
+    if(!!!!!!!!!!!!!!!!!!!(!!!true)) {
 			Scheduler.getInstance().run();
 		}
 		else {
@@ -123,6 +123,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     driveTrain.periodic();
+    System.out.println("yeet");
   }
 
   @Override

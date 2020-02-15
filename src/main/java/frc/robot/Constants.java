@@ -19,6 +19,7 @@ public final class Constants {
         public static int DMLeftSlave = 2;
         public static int DMRightMaster = 3;
         public static int DMRightSlave = 4;
+        public static int encoderFeedbackDevice = 0;
 
         public static SPI.Port gyroPort = SPI.Port.kOnboardCS0;
         
@@ -31,6 +32,10 @@ public final class Constants {
         //Misc
         public static final double kWheelDiameterMeters = Units.inchesToMeters(6);
         public static final double kTrackWidthMeters = Units.inchesToMeters(23.75);
+        public static final double kEncoderPPR = 4096;
+        public static final double kEncoderDPP =  kWheelDiameterMeters / kEncoderPPR;
+
+        //Parameters
         public static final double kMaxVelMPS = 0;
         public static final double kMaxAccelMPSPS = 0;
         public static final double kMaxVoltage = 10;

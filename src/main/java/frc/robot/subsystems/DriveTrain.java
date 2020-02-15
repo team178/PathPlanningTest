@@ -7,7 +7,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -59,6 +62,12 @@ public class DriveTrain extends SubsystemBase {
   private static double twistVal;
   private static double yReduction;
   private static double twistReduction;
+
+  //Encoder methods
+  public Supplier<Double> leftPosition;
+  public Supplier<Double> rightPosition;
+  public Supplier<Double> leftRate;
+  public Supplier<Double> rightRate;
   
   public DriveTrain() {
     leftMaster = new WPI_TalonSRX(RobotMappings.DMLeftMaster);
@@ -66,6 +75,17 @@ public class DriveTrain extends SubsystemBase {
     rightMaster = new WPI_TalonSRX(RobotMappings.DMRightMaster);
     rightSlave = new WPI_VictorSPX(RobotMappings.DMRightSlave);
     
+    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, RobotMappings.encoderFeedbackDevice, 10);
+    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, RobotMappings.encoderFeedbackDevice, 10);
+
+    leftPosition = () -> leftMaster.getSelectedSensorPosition(RobotMappings.encoderFeedbackDevice) * PathConstants.kEncoderDPP;
+    rightPosition = () -> rightMaster.getSelectedSensorPosition(RobotMappings.encoderFeedbackDevice) * PathConstants.kEncoderDPP;
+    leftRate = () -> leftMaster.getSelectedSensorPosition(RobotMappings.encoderFeedbackDevice) * PathConstants.kEncoderDPP * PathConstants.kEncoderDPP * 10;
+    rightRate = () -> rightMaster.getSelectedSensorPosition(RobotMappings.encoderFeedbackDevice) * PathConstants.kEncoderDPP * PathConstants.kEncoderDPP * 10;
+    
+    leftMaster.setSensorPhase(true);
+    rightMaster.setSensorPhase(true);
+
     leftSlave.follow(leftMaster);
     rightSlave.follow(rightMaster);
 
@@ -110,8 +130,8 @@ public class DriveTrain extends SubsystemBase {
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-      getLeftRate(),
-      getRightRate()
+      leftRate.get(),
+      rightRate.get()
     );
   }
 
@@ -152,26 +172,6 @@ public class DriveTrain extends SubsystemBase {
     return talon.getSensorCollection().getQuadratureVelocity();
   }
 
-  public double getLeftDistance() {
-    return 0;
-  }
-
-  public double getRightDistance() {
-    return 0;
-  }
-
-  public double getLeftRate() {
-    return 0;
-  }
-
-  public double getRightRate() {
-    return 0;
-  }
-
-  public void resetEncoders() {
-
-  }
-
   /*
    * gyro methods
    */
@@ -184,7 +184,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void resetGyro() {
-    gyro.reset();
+    gyro.reset(); 
   }
 
   /*
@@ -195,7 +195,6 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    resetEncoders();
     odometry.resetPosition(pose, getAngle());
   }
 
@@ -211,11 +210,11 @@ public class DriveTrain extends SubsystemBase {
     drive(yVal+twistVal, yVal-twistVal);
 
     //Path planning
-    odometry.update(getAngle(), getLeftDistance(), getRightDistance());
+    odometry.update(getAngle(), leftRate.get(), rightRate.get());
 
     //test
-    System.out.println("left dist: " + getDistance(leftMaster));
-    System.out.println("right dist: " + getDistance(rightMaster));
+    // System.out.println("left dist: " + getDistance(leftMaster));
+    // System.out.println("right dist: " + getDistance(rightMaster));
   }
 
   /*
