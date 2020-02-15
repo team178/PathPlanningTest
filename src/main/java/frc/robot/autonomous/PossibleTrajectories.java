@@ -6,8 +6,10 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.autonomous;
+
 import java.util.List;
 
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.Robot;
 import frc.robot.Constants.PathConstants;
 import frc.robot.subsystems.DriveTrain;
@@ -32,7 +35,7 @@ public class PossibleTrajectories {
     );
 
         //Creating trajectory config
-        TrajectoryConfig configForward = new TrajectoryConfig(
+        public TrajectoryConfig configForward = new TrajectoryConfig(
         PathConstants.kMaxVelMPS, 
         PathConstants.kMaxAccelMPSPS
         )
@@ -44,7 +47,7 @@ public class PossibleTrajectories {
     
 
         //Creating Trajectory for middle starting position going forwards
-        Trajectory TrajectoryMiddleForward = TrajectoryGenerator.generateTrajectory(
+        public Trajectory TrajectoryMiddleForward = TrajectoryGenerator.generateTrajectory(
             //Start pose
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
@@ -123,4 +126,19 @@ public class PossibleTrajectories {
             new Pose2d(3, -2, new Rotation2d(45.0)),
             configBackward
         );
+        public RamseteCommand getRamseteCommand(Trajectory path) {
+            RamseteCommand getCommand = new RamseteCommand(
+                path,
+                driveTrain::getPoseMeters,
+                new RamseteController(PathConstants.kRamseteB, PathConstants.kRamseteZeta),
+                driveTrain.getFeedforward(),
+                driveTrain.getKinematics(),
+                driveTrain::getWheelSpeeds,
+                driveTrain.getLeftPIDController(),
+                driveTrain.getRightPIDController(),
+                driveTrain::driveVolts,
+                driveTrain
+            );
+            return getCommand;
+        }
 }
