@@ -94,36 +94,36 @@ public class PossibleTrajectories {
         //Creating Trajectory for middle position going backwards
         Trajectory TrajectoryMiddleBack = TrajectoryGenerator.generateTrajectory(
             //Start pose
-            new Pose2d(0, 0, new Rotation2d(0)),
+            new Pose2d(3, 0, new Rotation2d(0)),
             List.of(
                 new Translation2d(1.5,0)
                 ),
             // End pose
-            new Pose2d(3, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             configBackward
             );
 
         //Creating Trajectory for right position going backwards
         Trajectory TrajectoryRightBack = TrajectoryGenerator.generateTrajectory(
             //Start pose
-            new Pose2d(0, 0, new Rotation2d(30.0)),
+            new Pose2d(3, -1, new Rotation2d(30)),
             List.of(
-                new Translation2d(1.5,-1)
+                new Translation2d(1.5,-0.5)
                 ),
             // End pose
-            new Pose2d(3, 2, new Rotation2d(45.0)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             configBackward
         );
 
         //Creating Trajectory for left position going backwards
         Trajectory TrajectoryLeftBack = TrajectoryGenerator.generateTrajectory(
             //Start pose
-            new Pose2d(0, 0, new Rotation2d(30.0)),
+            new Pose2d(3, 1, new Rotation2d(-30)),
             List.of(
-                new Translation2d(1.5,-2)
+                new Translation2d(1.5, 0.5)
                 ),
             // End pose
-            new Pose2d(3, -2, new Rotation2d(45.0)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             configBackward
         );
         public RamseteCommand getRamseteCommand(Trajectory path) {
