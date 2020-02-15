@@ -60,10 +60,10 @@ public class PossibleTrajectories {
             //Start pose
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
-                new Translation2d(1.5, -0.2) //Insert proper dimensions
+                new Translation2d(1.5, -0.5) //Insert proper dimensions
                 ),
             // End pose
-            new Pose2d(3, -0.4, new Rotation2d(30)), //Insert proper dimensions
+            new Pose2d(3, -1, new Rotation2d(30)), //Insert proper dimensions
             configForward
         );
 
@@ -72,10 +72,10 @@ public class PossibleTrajectories {
             //Start pose
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
-                new Translation2d(1.5, 0.2)
+                new Translation2d(1.5, 0.5)
             ),
             // End pose
-            new Pose2d(3, 0.4, new Rotation2d(-30)),
+            new Pose2d(3, 1, new Rotation2d(-30)),
             configForward
         );
 
