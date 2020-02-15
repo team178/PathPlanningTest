@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj.util.Units;
 public final class Constants {
     
     public static class RobotMappings {
+
+        //Test Motor for this repo
+        public static int motor = 0;
+
         //Robot
         public static int PCM = 0;
         public static int DMLeftMaster = 1;

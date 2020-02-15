@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.RobotMappings;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.TestAlternateSubsystem;
 import libs.IO.ThrustmasterJoystick;
 
 /**
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   
   //Declare subsystems
   public static DriveTrain driveTrain;
+  public static TestAlternateSubsystem motor;
 
   //Declare controllers
   public static ThrustmasterJoystick mainController = new ThrustmasterJoystick(RobotMappings.mainController);
@@ -60,6 +62,7 @@ public class Robot extends TimedRobot {
     
     //Subsystems
     driveTrain = new DriveTrain();
+    motor = new TestAlternateSubsystem();
     
     //Camera 1
     frontCamera = CameraServer.getInstance().startAutomaticCapture("Front cam", 0);
