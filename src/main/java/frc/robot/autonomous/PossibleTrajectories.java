@@ -44,7 +44,7 @@ public class PossibleTrajectories {
     
 
         //Creating Trajectory for middle starting position going forwards
-        Trajectory TrajectoryMiddleStart = TrajectoryGenerator.generateTrajectory(
+        Trajectory TrajectoryMiddleForward = TrajectoryGenerator.generateTrajectory(
             //Start pose
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
@@ -58,24 +58,24 @@ public class PossibleTrajectories {
         //Creating Trajectory for Right position going forwards
         Trajectory TrajectoryRightForward = TrajectoryGenerator.generateTrajectory(
             //Start pose
-            new Pose2d(0, 0, new Rotation2d(30)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
-                new Translation2d(1.5,-1) //Insert proper dimensions
+                new Translation2d(1.5, -0.2) //Insert proper dimensions
                 ),
             // End pose
-            new Pose2d(3, 2, new Rotation2d(30.0)), //Insert proper dimensions
+            new Pose2d(3, -0.4, new Rotation2d(30)), //Insert proper dimensions
             configForward
         );
 
         //Creating Trajectory for left position going forwards
         Trajectory TrajectoryLeftForward = TrajectoryGenerator.generateTrajectory(
             //Start pose
-            new Pose2d(0, 0, new Rotation2d(30.0)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
-                new Translation2d(1.5,-2)
+                new Translation2d(1.5, 0.2)
             ),
             // End pose
-            new Pose2d(3, -2, new Rotation2d(45.0)),
+            new Pose2d(3, 0.4, new Rotation2d(-30)),
             configForward
         );
 
