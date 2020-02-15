@@ -33,23 +33,23 @@ public final class Constants {
         public static final double kWheelDiameterMeters = Units.inchesToMeters(6);
         public static final double kTrackWidthMeters = Units.inchesToMeters(23.75);
         public static final double kEncoderPPR = 4096;
-        public static final double kEncoderDPP =  kWheelDiameterMeters / kEncoderPPR;
+        public static final double kEncoderDPP =  kWheelDiameterMeters * Math.PI / kEncoderPPR;
 
         //Parameters
         public static final double kMaxVelMPS = 0;
-        public static final double kMaxAccelMPSPS = 0;
+        public static final double kMaxAccelMPSPS = 3;
         public static final double kMaxVoltage = 10;
 
         //Feedforward gains
-        public static final double kS = 0;
-        public static final double kV = 0;
-        public static final double kA = 0;
+        public static final double kS = 0.898;
+        public static final double kV = 0.772;
+        public static final double kA = 0.091;
 
         //Feedback gains
-        public static final double kDriveP = 0;
+        public static final double kDriveP = 4.09;
 
         //Ramsete
-        public static final double kRamseteB = 0;
-        public static final double kRamseteZeta = 0;
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
     }
 }
