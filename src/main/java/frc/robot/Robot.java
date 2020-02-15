@@ -45,6 +45,18 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
+
+    startPath.addOption("Left","Left");
+    startPath.addOption("Middle","Middle");
+    startPath.addOption("Right","Right");
+
+    endLocation.addOption("Left","Left");
+    endLocation.addOption("Middle","Middle");
+    endLocation.addOption("Right","Right");
+
+
+    SmartDashboard.putData("AutoLocation", startPath);
+    SmartDashboard.putData("AutoLocation", endLocation);
     
     //Subsystems
     driveTrain = new DriveTrain();
@@ -71,49 +83,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    startPath.addOption("Left","Left");
-    startPath.addOption("Middle","Middle");
-    startPath.addOption("Right","Right");
 
-    endLocation.addOption("Left","Left");
-    endLocation.addOption("Middle","Middle");
-    endLocation.addOption("Right","Right");
-
-
-    SmartDashboard.putData("AutoLocation", startPath);
-    SmartDashboard.putData("AutoLocation", endLocation);
   }
 
   @Override
   public void autonomousPeriodic() {
-    if(!!!!!!!!!!!!!!!!!!!(!!!true)) {
-			Scheduler.getInstance().run();
-		}
-		else {
+      Scheduler.getInstance().run();
+      
       //Might scrw up if keep changing startPath and endLocation
       if (startPath.getSelected() != "" && endLocation.getSelected() != "" ){
         String path1 = startPath.getSelected();
         String path2 = endLocation.getSelected();
-        if (path1 == "Left"){
+        if (path1.equals("Left")) {
           //put trajectory 1
         }
-        else if (path1 == "Middle"){
+        else if (path1.equals("Middle")) {
           //put trajectory 2
         }
-        else if (path1 == "Right"){
+        else if (path1.equals("Right")) {
           //put trajectory 3
         }
-        if (path2 == "Left"){
+        if (path2.equals("Left")) {
           //put trajectory 4
         }
-        else if (path2 == "Middle"){
+        else if (path2.equals("Middle")) {
           //put trajectory 5
         }
-        else if (path2 == "Right"){
+        else if (path2.equals("Right")) {
           //put trajectory 6
         }
-      } 
-    }
+    } 
   }
 
   @Override
