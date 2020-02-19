@@ -202,8 +202,8 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     //Joystick drive
-    yReduction = Robot.mainController.trigger.get() ? 0.5 : 1;
-    twistReduction = Robot.mainController.trigger.get() ? 0.4 : 1;
+    yReduction = Robot.mainController.trigger.get() ? 0.5 : 0.8;
+    twistReduction = Robot.mainController.trigger.get() ? 0.3 : 0.5;
 
     yVal = Robot.mainController.getY() * yReduction;
     twistVal = Robot.mainController.getTwist() * twistReduction;
