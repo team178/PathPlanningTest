@@ -12,10 +12,12 @@ import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.RobotMappings;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.TestAlternateSubsystem;
 import libs.IO.ThrustmasterJoystick;
 
 /**
@@ -29,6 +31,7 @@ public class Robot extends TimedRobot {
   
   //Declare subsystems
   public static DriveTrain driveTrain;
+  public static TestAlternateSubsystem motor;
 
   //Declare controllers
   public static ThrustmasterJoystick mainController = new ThrustmasterJoystick(RobotMappings.mainController);
@@ -44,9 +47,22 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
+
+    startPath.addOption("Left","Left");
+    startPath.addOption("Middle","Middle");
+    startPath.addOption("Right","Right");
+
+    endLocation.addOption("Left","Left");
+    endLocation.addOption("Middle","Middle");
+    endLocation.addOption("Right","Right");
+
+
+    SmartDashboard.putData("AutoLocation", startPath);
+    SmartDashboard.putData("AutoLocation", endLocation);
     
     //Subsystems
     driveTrain = new DriveTrain();
+    motor = new TestAlternateSubsystem();
     
     //Camera 1
     frontCamera = CameraServer.getInstance().startAutomaticCapture("Front cam", 0);
@@ -59,18 +75,6 @@ public class Robot extends TimedRobot {
     backCamera.setResolution(160, 120);
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
-    
-    startPath.addOption("Left","Left");
-    startPath.addOption("Middle","Middle");
-    startPath.addOption("Right","Right");
-
-    endLocation.addOption("Left","Left");
-    endLocation.addOption("Middle","Middle");
-    endLocation.addOption("Right","Right");
-
-
-    SmartDashboard.putData("AutoLocation", startPath);
-    SmartDashboard.putData("AutoLocation", endLocation);
   }
   
 
@@ -82,10 +86,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+
   }
 
   @Override
   public void autonomousPeriodic() {
+      Scheduler.getInstance().run();
+      
+      //Might scrw up if keep changing startPath and endLocation
+      if (startPath.getSelected() != "" && endLocation.getSelected() != "" ){
+        String path1 = startPath.getSelected();
+        String path2 = endLocation.getSelected();
+        if (path1.equals("Left")) {
+          //put trajectory 1
+        }
+        else if (path1.equals("Middle")) {
+          //put trajectory 2
+        }
+        else if (path1.equals("Right")) {
+          //put trajectory 3
+        }
+        if (path2.equals("Left")) {
+          //put trajectory 4
+        }
+        else if (path2.equals("Middle")) {
+          //put trajectory 5
+        }
+        else if (path2.equals("Right")) {
+          //put trajectory 6
+        }
+    } 
   }
 
   @Override
@@ -95,6 +125,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     driveTrain.periodic();
+    System.out.println("yeet");
   }
 
   @Override
