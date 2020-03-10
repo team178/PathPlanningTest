@@ -7,14 +7,19 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import libs.IO.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.RobotMappings;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.TestAlternateSubsystem;
@@ -34,12 +39,14 @@ public class Robot extends TimedRobot {
   public static TestAlternateSubsystem motor;
 
   //Declare controllers
-  public static ThrustmasterJoystick mainController = new ThrustmasterJoystick(RobotMappings.mainController);
-  public static XboxController auxController = new XboxController(RobotMappings.auxController);
+  public static ThrustmasterJoystick mainController;
+  public static XboxController auxController;
 
   //USB Camera declarations
+  public static VideoSink server;
   public static UsbCamera frontCamera;
   public static UsbCamera backCamera;
+  public static boolean toggleSwap;
 
   //Declare auto sendable choosers
   public static SendableChooser<String> startPath = new SendableChooser<>();
@@ -63,6 +70,9 @@ public class Robot extends TimedRobot {
     //Subsystems
     driveTrain = new DriveTrain();
     motor = new TestAlternateSubsystem();
+
+    //Camera Server declaration]
+    server = CameraServer.getInstance().getServer();
     
     //Camera 1
     frontCamera = CameraServer.getInstance().startAutomaticCapture("Front cam", 0);
@@ -75,13 +85,15 @@ public class Robot extends TimedRobot {
     backCamera.setResolution(160, 120);
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
+
+    mainController = new ThrustmasterJoystick(RobotMappings.mainController);
+    auxController = new XboxController(RobotMappings.auxController);
   }
   
 
 
   @Override
   public void robotPeriodic() {
-    
   }
 
   @Override
@@ -91,7 +103,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-      Scheduler.getInstance().run();
+      CommandScheduler.getInstance().run();
       
       //Might scrw up if keep changing startPath and endLocation
       if (startPath.getSelected() != "" && endLocation.getSelected() != "" ){
@@ -135,5 +147,19 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
+  public void swapCams() {
+  if (auxController.auxA.get()) {
+    if (!toggleSwap) {
+      System.out.println("Setting Camera 2");
+      server.setSource(backCamera);
+      toggleSwap = true;
+    } else { 
+      System.out.println("Setting Camera 1");
+      server.setSource(frontCamera);
+      toggleSwap = false;
+    }
+  }
+}
 
 }

@@ -16,15 +16,15 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class XboxController {
 
-    public static Joystick xbox;
-    public static Button auxA;
-    public static Button auxB;
-    public static Button auxX;
-    public static Button auxY;
-    public static Button auxLeftBumper;
-    public static Button auxRightBumper;
-    public static Button auxBack;
-    public static Button auxStart;
+    public Joystick xbox;
+    public Button auxA;
+    public Button auxB;
+    public Button auxX;
+    public Button auxY;
+    public Button auxLeftBumper;
+    public Button auxRightBumper;
+    public Button auxBack;
+    public Button auxStart;
 
     private int port;
 
