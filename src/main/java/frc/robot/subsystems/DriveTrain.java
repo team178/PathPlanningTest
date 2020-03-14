@@ -169,8 +169,8 @@ public class DriveTrain extends SubsystemBase {
     //test
     // System.out.println("left pos: " + leftPosition.get());
     // System.out.println("left rate: " + leftRate.get());
-    System.out.println("right pos: " + rightPosition.get());
-    System.out.println("right rate: " + rightRate.get());
+    //System.out.println("right pos: " + rightPosition.get());
+    //System.out.println("right rate: " + rightRate.get());
   }
 
   /*

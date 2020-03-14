@@ -8,7 +8,7 @@
 package frc.robot;
 
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -41,11 +41,12 @@ public class Robot extends TimedRobot {
   public static XboxController auxController;
 
   //USB Camera declarations
-  public static VideoSink server;
+  public static MjpegServer server;
   public static UsbCamera frontCamera;
   public static UsbCamera backCamera;
   public static boolean toggleSwap;
-
+  public static boolean toggleBuffer;
+  
   //Declare auto sendable choosers
   public static SendableChooser<String> startPath = new SendableChooser<>();
   public static SendableChooser<String> endLocation = new SendableChooser<>();
@@ -84,13 +85,14 @@ public class Robot extends TimedRobot {
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
 
-    CameraServer.getInstance().getServer().setSource(frontCamera);
-    server = CameraServer.getInstance().getServer();
+    server = CameraServer.getInstance().addSwitchedCamera("server");
+    server.setSource(frontCamera);
 
     mainController = new ThrustmasterJoystick(RobotMappings.mainController);
     auxController = new XboxController(RobotMappings.auxController);
 
-    swapCams();
+    toggleSwap = false;
+    toggleBuffer = true;
   }
 
   @Override
@@ -141,6 +143,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("tx", limelight.getHorizontalDegToTarget());
     SmartDashboard.putNumber("ty", limelight.getVerticalDegToTarget());
     SmartDashboard.putNumber("area", limelight.getTargetArea());
+    swapCams();
   }
 
   @Override
@@ -152,16 +155,21 @@ public class Robot extends TimedRobot {
   }
 
   public void swapCams() {
-    if (auxController.auxA.get()) {
+    if (auxController.auxA.get() && toggleBuffer) {
       if (!toggleSwap) {
         System.out.println("Setting Camera 2");
         server.setSource(backCamera);
         toggleSwap = true;
+        toggleBuffer = false;
       } else { 
         System.out.println("Setting Camera 1");
         server.setSource(frontCamera);
         toggleSwap = false;
+        toggleBuffer = false;
      }
+    }
+    if (!auxController.auxA.get() && !toggleBuffer) {
+      toggleBuffer = true;
     }
   }
 
