@@ -12,8 +12,6 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -164,8 +162,7 @@ public class DriveTrain extends SubsystemBase {
     yVal = Robot.mainController.getY() * yReduction;
     twistVal = Robot.mainController.getTwist() * twistReduction;
 
-    //drive(yVal+twistVal, yVal-twistVal);
-    drive(1, 0);
+    drive(yVal+twistVal, yVal-twistVal);
     //Path planning
     odometry.update(getAngle(), leftRate.get(), rightRate.get());
 

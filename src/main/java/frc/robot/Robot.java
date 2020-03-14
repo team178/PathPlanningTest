@@ -7,19 +7,16 @@
 
 package frc.robot;
 
-import java.util.Set;
-
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import libs.IO.XboxController;
+import libs.limelight.LimelightCamera;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.RobotMappings;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.TestAlternateSubsystem;
@@ -37,6 +34,7 @@ public class Robot extends TimedRobot {
   //Declare subsystems
   public static DriveTrain driveTrain;
   public static TestAlternateSubsystem motor;
+  public static LimelightCamera limelight;
 
   //Declare controllers
   public static ThrustmasterJoystick mainController;
@@ -70,9 +68,9 @@ public class Robot extends TimedRobot {
     //Subsystems
     driveTrain = new DriveTrain();
     motor = new TestAlternateSubsystem();
+    limelight = new LimelightCamera();
 
     //Camera Server declaration]
-    server = CameraServer.getInstance().getServer();
     
     //Camera 1
     frontCamera = CameraServer.getInstance().startAutomaticCapture("Front cam", 0);
@@ -86,11 +84,14 @@ public class Robot extends TimedRobot {
     backCamera.setFPS(30);
     backCamera.setPixelFormat(PixelFormat.kYUYV);
 
+    CameraServer.getInstance().getServer().setSource(frontCamera);
+    server = CameraServer.getInstance().getServer();
+
     mainController = new ThrustmasterJoystick(RobotMappings.mainController);
     auxController = new XboxController(RobotMappings.auxController);
-  }
-  
 
+    swapCams();
+  }
 
   @Override
   public void robotPeriodic() {
@@ -98,7 +99,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-
   }
 
   @Override
@@ -137,7 +137,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     driveTrain.periodic();
-    System.out.println("yeet");
+    SmartDashboard.putBoolean("Target found", limelight.isTargetFound());
+    SmartDashboard.putNumber("tx", limelight.getHorizontalDegToTarget());
+    SmartDashboard.putNumber("ty", limelight.getVerticalDegToTarget());
+    SmartDashboard.putNumber("area", limelight.getTargetArea());
   }
 
   @Override
@@ -149,17 +152,17 @@ public class Robot extends TimedRobot {
   }
 
   public void swapCams() {
-  if (auxController.auxA.get()) {
-    if (!toggleSwap) {
-      System.out.println("Setting Camera 2");
-      server.setSource(backCamera);
-      toggleSwap = true;
-    } else { 
-      System.out.println("Setting Camera 1");
-      server.setSource(frontCamera);
-      toggleSwap = false;
+    if (auxController.auxA.get()) {
+      if (!toggleSwap) {
+        System.out.println("Setting Camera 2");
+        server.setSource(backCamera);
+        toggleSwap = true;
+      } else { 
+        System.out.println("Setting Camera 1");
+        server.setSource(frontCamera);
+        toggleSwap = false;
+     }
     }
   }
-}
 
 }
